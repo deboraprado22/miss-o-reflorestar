@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Reflorestar</title>
+    <style>
+        :root {
+            --bg-floresta: #4a3c31; /* Começa seco */
+            --cor-arvore: #5c4033;
+            --cor-folhas: #7d6608;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #fdf6e2;;
+            color: #1e1e24;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            user-select: none;
+        }
+        /* --- ESTILO DO CONTAINER DA FOTO --- */
+        .foto-container {
+            display: flex;
+            justify-content: center; /* Centraliza a foto na tela */
+            margin-bottom: 20px;     /* Dá um espaço entre a foto e a tabela */
+            margin-top: 10px;
+        }
+
+        /* --- ESTILO DA FOTO DE PERFIL --- */
+        .foto-perfil {
+            width: auto;            /* Define uma largura fixa ideal */
+            height: 120px;           /* Mantém a altura igual à largura */
+            object-fit: contain;       /* Recorta a imagem proporcionalmente para não distorcer/achatar */
+            border-radius: 0;      /* Deixa a foto perfeitamente redonda (estilo avatar) */
+            border: 3px solid #2e4a3f; /* Adiciona uma borda com o verde escuro do seu jogo */
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.05));
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: #2e4a3f;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .cenario-container {
+            width: 100%;
+            margin-bottom: 20px;
+             display: flex;
+             justify-content: center;
+        }
+        #img-cenario {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 3px solid #c8e2d8;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .chao {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background: #3e2723;
+            transition: background 1.5s ease;
+        }
+
+        /* --- STATUS DO JOGO --- */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #1a1a24;
+            padding: 10px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .vidas { color: #ffffff; font-weight: bold; }
+        .fase { color: #ffffff; font-weight: bold; }
+        .progresso { color: #ffffff; font-weight: bold; }
+
+        /* --- PERGUNTAS E OPÇÕES --- */
+        .quiz-container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            min-height: 180px;
+        }
+
+        .pergunta-texto {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #1e1e24;
+            line-height: 1.5;
+        }
+
+        .opcoes-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .btn-opcao {
+            background: #ffffff;
+            color: #2e4a3f;
+            border: 2px solid #bddec0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .btn-opcao:hover {
+            background: #3498db;
+            border-color: #2980b9;
+        }
+
+        .btn-inicio {
+            background: #2ecc71;
+            color: white;
+            font-size: 1.3em;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-inicio:hover { background: #27ae60; }
+      .tabela-info {
+            width: 100%;
+            border-collapse: collapse; /* Faz as bordas ficarem unidas em uma linha única */
+            margin-bottom: 20px;
+            background-color: #ffffff; /* Fundo branco para os dados ficarem limpos */
+            border-radius: 8px;
+            overflow: hidden; /* Garante que os cantos arredondados funcionem */
+            border: 1px solid #c8e2d8; /* Borda externa verde suave */
+        }
+
+        /* Estilo do Cabeçalho da Tabela (Missão Reflorestar) */
+        .tabela-info th {
+            background-color: #2e4a3f; /* Verde escuro institucional */
+            color: #ffffff;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .tabela-info th h1 {
+            margin: 0;
+            font-size: 1.4em;
+            color: #ffffff;
+        }
+
+        /* Estilo das Linhas e Células com as divisões */
+        .tabela-info td {
+            padding: 10px 15px;
+            font-size: 0.95em;
+            color: #2c3e50;
+            border-bottom: 1px solid #e8f4f0; /* Linha divisória horizontal em verde bem claro */
+        }
+
+        /* Estilo da primeira coluna (onde diz Universidade, Curso, etc.) */
+        .tabela-info td:first-child {
+            width: 25%;
+            background-color: #f4f9f6; /* Um leve fundo verde-fresco para destacar os rótulos */
+            color: #1e332a;
+            border-right: 1px solid #e8f4f0; /* Linha divisória vertical */
+        }
+
+        /* Remove a última linha divisória para não cortar o fundo arredondado */
+        .tabela-info tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <audio id="musica-fase1" src="musica_fase1.mp3" loop></audio>
+    <audio id="musica-fase2" src="musica_fase2.mp3" loop></audio>
+    <audio id="musica-fase3" src="musica_fase3.mp3" loop></audio>
+    <audio id="musica-fase4" src="musica_fase4.mp3" loop></audio>
+    <audio id="musica-fase5" src="musica_fase5.mp3" loop></audio>
+
+    <div class="foto-container">
+        <img src="utfpr.png" alt="Foto da Aluna Débora" class="foto-perfil">
+    </div>
+
+    <table class="tabela-info">
+        <tr>
+            <th colspan="2"><h1>Jogo Missão Reflorestar - Análise Combinatória e Probabilidade </h1></th>
+        </tr>
+        <tr>
+            <td><strong>Universidade:</strong></td>
+            <td>Universidade Tecnológica Federal do Paraná (UTFPR) - Campus Londrina</td>
+        </tr>
+        <tr>
+            <td><strong>Campus:</strong></td>
+            <td>Londrina</td>
+        </tr>
+        <tr>
+            <td><strong>Curso:</strong></td>
+            <td>Sistemas de Informação</td>
+        </tr>
+        <tr>
+            <td><strong>Disciplina:</strong></td>
+            <td>Matemática Discreta</td>
+        </tr>
+        <tr>
+            <td><strong>Professor:</strong></td>
+            <td>Alireza Mohebi Ashtiani</td>
+        </tr>
+        <tr>
+            <td><strong>Aluna:</strong></td>
+            <td>Débora Prado</td>
+        </tr>
+        <tr>
+            <td><strong>Período:</strong></td>
+            <td>2º Semestre / 2026</td>
+        </tr>
+    </table>
+
+    <div class="game-container">
+        <h3 style="margin-top: 0; color: #ffffff;">Responda corretamente às questões de Análise Combinatória e Probabilidade.<br> Se errar 3 vezes em uma fase, a floresta perece!</h3>
+
+        <div class="cenario-container" id="cenario" style="height: auto; min-height: 200px; background: none; border: none;">
+            <img id="img-cenario" src="fase1.png" alt="Cenário da Floresta" style="width: 100%; height: auto; max-height: 250px; object-fit: cover; border-radius: 8px; border: 3px solid #c8e2d8;">
+        </div>
+
+        <div id="tela-inicial">
+            <button class="btn-inicio" onclick="iniciarJogo()">Iniciar Jornada</button>
+        </div>
+
+        <div id="tela-jogo" style="display: none;">
+            <div class="status-bar">
+                <span class="fase" id="txt-fase">Fase: 1/5</span>
+                <span class="vidas" id="txt-vidas">Vidas: ❤️ ❤️ ❤️</span>
+                <span class="progresso" id="txt-progresso">Acertos: 0/3</span>
+            </div>
+
+            <div class="quiz-container">
+                <div class="pergunta-texto" id="txt-pergunta">Carregando pergunta...</div>
+                <div class="opcoes-grid" id="grade-opcoes"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BANCO DE DADOS COMPLETO COM 75 PERGUNTAS (15 POR FASE, SENDO 3 GRUPOS DE 5 PARA EVITAR REPETIÇÃO) ---
+        const bancoPerguntas = {
+            1: [ // FASE 1: Princípio Fundamental da Contagem (PFC) Básico
+                { p: "Se uma lanchonete oferece 3 tipos de sanduíche e 2 tipos de suco, quantas combinações de lanche com um suco e um sanduíche são possíveis?", o: ["5", "6", "9", "8"], c: "6" },
+                { p: "Uma pessoa tem 4 camisas e 3 calças. De quantas maneiras diferentes ela pode se vestir escolhendo uma de cada?", o: ["7", "12", "10", "16"], c: "12" },
+                { p: "Quantos números de dois algarismos distintos podemos formar usando os dígitos 1, 2, 3 e 4?", o: ["16", "12", "8", "24"], c: "12" },
+                { p: "Uma moeda é lançada 3 vezes consecutivas. Qual o número total de resultados possíveis para a sequência de caras e coroas?", o: ["6", "8", "9", "4"], c: "8" },
+                { p: "Uma prova possui 5 questões de Verdadeiro ou Falso. De quantas maneiras diferentes um aluno pode responder a essa prova?", o: ["10", "25", "32", "15"], c: "32" },
+                // Grupo B de reserva
+                { p: "Se um carro é vendido em 3 modelos e 5 cores diferentes, quantas opções de escolha o comprador possui?", o: ["8", "15", "20", "12"], c: "15" },
+                { p: "Quantas senhas de 2 letras podem ser criadas usando apenas as vogais (A, E, I, O, U) sem repetição?", o: ["25", "20", "10", "15"], c: "20" },
+                { p: "Para ir da cidade A para a B existem 2 estradas, e da B para a C existem 4. Quantos caminhos ligam A até C passando por B?", o: ["6", "8", "12", "10"], c: "8" },
+                { p: "Um armário tem 5 gavetas e 5 chaves diferentes. Se cada chave abre apenas uma gaveta, quantas tentativas falhas no máximo ocorrem ao tentar abrir a primeira?", o: ["5", "4", "25", "1"], c: "4" },
+                { p: "De quantos modos podemos pintar uma bandeira de 3 listras verticais usando as cores Azul e Vermelho, sem que listras vizinhas tenham a mesma cor?", o: ["6", "2", "4", "8"], c: "2" },
+                // Grupo C de reserva
+                { p: "Um restaurante oferece 4 opções de prato principal e 3 de sobremesa. Quantos menus diferentes podem ser montados?", o: ["7", "12", "9", "16"], c: "12" },
+                { p: "Quantos resultados são possíveis no lançamento simultâneo de um dado de 6 lados e uma moeda?", o: ["8", "12", "36", "18"], c: "12" },
+                { p: "Em uma competição há 3 finalistas. De quantas formas pode ser definido o pódio de 1º e 2º lugar?", o: ["6", "9", "3", "5"], c: "6" },
+                { p: "Uma sorveteria tem 6 sabores. Deseja-se pedir 2 bolas de sabores diferentes em uma ordem específica. Quantas opções há?", o: ["30", "12", "36", "15"], c: "30" },
+                { p: "Quantos números de 3 algarismos (iguais ou não) podem ser formados usando apenas os algarismos 7 e 8?", o: ["6", "8", "9", "4"], c: "8" }
+            ],
+            2: [ // FASE 2: Permutações Simples e Fatorial
+                { p: "De quantas maneiras diferentes 4 pessoas podem se sentar em uma fileira de 4 cadeiras?", o: ["16", "24", "12", "8"], c: "24" },
+                { p: "Quantos anagramas possui a palavra 'GATO'?", o: ["12", "24", "16", "4"], c: "24" },
+                { p: "Qual o valor de 5! (fatorial de 5)?", o: ["25", "120", "60", "24"], c: "120" },
+                { p: "De quantos modos 5 livros diferentes podem ser organizados lado a lado em uma estante?", o: ["25", "120", "60", "100"], c: "120" },
+                { p: "Quantos anagramas da palavra 'LUA' começam com a letra 'L'?", o: ["3", "2", "6", "1"], c: "2" },
+                // Grupo B
+                { p: "Três amigos vão ao cinema e encontram 3 poltronas vazias juntas. De quantas formas podem se sentar?", o: ["3", "6", "9", "12"], c: "6" },
+                { p: "Quantos anagramas possui a palavra 'CADERNO'?", o: ["720", "5040", "120", "49"], c: "5040" },
+                { p: "Se n! = 6, qual é o valor de n?", o: ["2", "3", "4", "6"], c: "3" },
+                { p: "De quantas formas podemos dispor as letras da palavra 'REI'?", o: ["3", "6", "9", "1"], c: "6" },
+                { p: "Quantos anagramas da palavra 'AMOR' terminam com a letra 'R'?", o: ["6", "24", "12", "4"], c: "6" },
+                // Grupo C
+                { p: "Simplificando a expressão 6! / 4!, obtemos qual resultado?", o: ["30", "15", "2", "24"], c: "30" },
+                { p: "De quantas maneiras 6 pessoas podem formar uma fila indiana?", o: ["120", "720", "360", "60"], c: "720" },
+                { p: "Quantos anagramas da palavra 'SOL' existem?", o: ["3", "6", "9", "1"], c: "6" },
+                { p: "Quatro livros de matemática precisam ficar juntos na estante. De quantas maneiras podemos ordená-los entre si?", o: ["16", "24", "12", "8"], c: "24" },
+                { p: "Qual o valor da operação 3! + 2! + 0! ?", o: ["6", "8", "9", "5"], c: "9" }
+            ],
+            3: [ // FASE 3: Arranjos e Combinações Simples (Distinção)
+                { p: "De um grupo de 5 pessoas, quantas comissões de 2 membros podem ser formadas?", o: ["20", "10", "25", "5"], c: "10" },
+                { p: "Em um campeonato com 6 times, de quantas maneiras diferentes podem ser definidos o campeão e o vice-campeão?", o: ["30", "15", "36", "12"], c: "30" },
+                { p: "Uma prova contém 8 questões. O aluno deve escolher exatamente 3 para responder. Quantas escolhas são possíveis?", o: ["56", "336", "24", "48"], c: "56" },
+                { p: "Quantos números de 3 algarismos distintos podem ser formados com os dígitos 1, 2, 3, 4, 5?", o: ["60", "125", "20", "10"], c: "60" },
+                { p: "Dispondo de 4 cores de tinta, quantos cartazes de duas cores sólidas diferentes podem ser pintados (a ordem das cores importa)?", o: ["6", "12", "16", "8"], c: "12" },
+                // Grupo B
+                { p: "Quantos subconjuntos de 2 elementos possui um conjunto com 4 elementos distintos?", o: ["8", "6", "12", "4"], c: "6" },
+                { p: "Para uma entrevista de emprego há 7 candidatos para preencher 2 vagas idênticas. Quantas duplas podem ser contratadas?", o: ["42", "21", "14", "49"], c: "21" },
+                { p: "Em uma corrida com 5 cavalos, de quantas formas pode acontecer a chegada dos 3 primeiros lugares?", o: ["10", "60", "120", "20"], c: "60" },
+                { p: "Quantas diagonais possui um pentágono (5 lados)? Utilize a fórmula de combinação C(5,2) - 5.", o: ["5", "10", "7", "2"], c: "5" },
+                { p: "Uma sorveteria tem 10 sabores. Quantas opções de taças com 3 sabores distintos podem ser criadas (sem importar a ordem)?", o: ["720", "120", "240", "100"], c: "120" },
+                // Grupo C
+                { p: "Uma senha bancária é feita por 4 algarismos distintos escolhidos de 0 a 9. Qual o total de senhas possíveis?", o: ["5040", "10000", "210", "4530"], c: "5040" },
+                { p: "De quantas maneiras podemos escolher 3 cartas de um baralho de 52 cartas sem importar a ordem?", o: ["22100", "132600", "156", "2600"], c: "22100" },
+                { p: "Numa sala com 10 pessoas, todas se cumprimentam com um aperto de mão. Quantos apertos de mão ocorrem no total?", o: ["90", "45", "100", "20"], c: "45" },
+                { p: "Com 6 pontos distintos sobre uma circunferência, quantos triângulos podemos formar unindo esses pontos?", o: ["20", "120", "15", "30"], c: "20" },
+                { p: "Quantos números de 2 algarismos distintos podem ser formados com os números ímpares (1, 3, 5, 7, 9)?", o: ["25", "20", "10", "15"], c: "20" }
+            ],
+            4: [ // FASE 4: Probabilidade Clássica e Espaço Amostral
+                { p: "Ao lançar um dado honesto de 6 lados, qual a probabilidade de sair um número par?", o: ["1/3", "1/2", "1/6", "2/3"], c: "1/2" },
+                { p: "No lançamento de duas moedas, qual a probabilidade de obter exatamente duas caras?", o: ["1/2", "1/4", "3/4", "1/3"], c: "1/4" },
+                { p: "Uma urna contém 3 bolas vermelhas e 2 azuis. Retirando uma bola ao acaso, qual a chance de ela ser azul?", o: ["2/3", "2/5", "3/5", "1/2"], c: "2/5" },
+                { p: "Qual a probabilidade de sortear ao acaso um número primo no intervalo de 1 a 10 (incluindo ambos)?", o: ["2/5", "3/10", "1/2", "4/10"], c: "2/5" },
+                { p: "No lançamento de um dado, qual a probabilidade de sair um número maior que 4?", o: ["1/3", "1/2", "2/3", "1/6"], c: "1/3" },
+                // Grupo B
+                { p: "Escolhendo uma letra da palavra 'BANANA' ao acaso, qual a probabilidade de ser a letra 'A'?", o: ["1/3", "1/2", "3/6", "2/3"], c: "1/2" },
+                { p: "Um baralho tem 52 cartas. Qual a probabilidade de retirar um Ás ao acaso?", o: ["1/52", "1/13", "4/13", "1/4"], c: "1/13" },
+                { p: "Se jogarmos dois dados comuns, qual a probabilidade de a soma dos pontos ser igual a 7?", o: ["1/6", "1/12", "5/36", "7/36"], c: "1/6" },
+                { p: "Uma caixa tem cartões numerados de 1 a 20. Sorteando um, qual a probabilidade de ser um múltiplo de 5?", o: ["1/5", "4/20", "1/4", "3/20"], c: "1/5" },
+                { p: "Em uma turma de 10 meninos e 15 meninas, qual a probabilidade de o representante sorteado ser um menino?", o: ["2/3", "2/5", "3/5", "10/15"], c: "2/5" },
+                // Grupo C
+                { p: "Qual a probabilidade de obter pelo menos uma coroa ao lançar uma moeda duas vezes?", o: ["1/4", "1/2", "3/4", "1"], c: "3/4" },
+                { p: "Sorteando um dia da semana ao acaso, qual a probabilidade de ele começar com a letra 'S'?", o: ["2/7", "3/7", "1/7", "4/7"], c: "3/7" },
+                { p: "No lançamento de um dado, qual a probabilidade de sair um número menor que 7?", o: ["1/2", "5/6", "1", "0"], c: "1" },
+                { p: "Uma urna tem 10 bolas numeradas de 1 a 10. Qual a chance de tirar um número maior que 8?", o: ["2/10", "3/10", "1/5", "4/10"], c: "1/5" },
+                { p: "Se um casal tem dois filhos, qual a probabilidade de ambos serem do sexo masculino?", o: ["1/2", "1/4", "3/4", "1/3"], c: "1/4" }
+            ],
+            5: [ // FASE 5: Eventos Independentes, Mutuamente Exclusivos e Probabilidade Condicional
+                { p: "Dois dados são lançados de forma independente. Qual a probabilidade de saírem dois números 6?", o: ["1/6", "1/12", "1/36", "1/18"], c: "1/36" },
+                { p: "Uma moeda é lançada duas vezes. Qual a probabilidade de sair cara no primeiro lançamento E coroa no segundo?", o: ["1/2", "1/4", "3/4", "1/8"], c: "1/4" },
+                { p: "Retirando duas cartas sucessivas com reposição de um baralho de 52 cartas, qual a chance de ambas serem de Copas?", o: ["1/4", "1/16", "1/26", "2/13"], c: "1/16" },
+                { p: "Em uma urna com 4 bolas brancas e 6 pretas, retiramos duas sem reposição. Qual a probabilidade de a primeira ser branca e a segunda preta?", o: ["24/100", "4/15", "6/15", "24/90"], c: "24/90" },
+                { p: "Se os eventos A e B são mutuamente exclusivos com P(A)=0,3 e P(B)=0,4, qual é o valor de P(A ou B)?", o: ["0,7", "0,12", "0,35", "0"], c: "0,7" },
+                // Grupo B
+                { p: "Lançando um dado, sabendo que o resultado foi um número par, qual a probabilidade de ele ser o número 2?", o: ["1/6", "1/3", "1/2", "1/4"], c: "1/3" },
+                { p: "Uma moeda e um dado são jogados. Qual a probabilidade de sair Cara e o número 5?", o: ["1/12", "1/8", "1/6", "1/4"], c: "1/12" },
+                { p: "A probabilidade de um aluno passar em Matemática é 0,6 e em Física é 0,5. Sendo independentes, qual a chance de passar em ambas?", o: ["0,11", "0,3", "0,2", "0,65"], c: "0,3" },
+                { p: "Numa gaveta há 5 meias pretas e 3 azuis. Retira-se uma meia e, sem devolver, retira-se outra. Qual a chance de ambas serem pretas?", o: ["25/64", "5/14", "20/56", "15/56"], c: "20/56" },
+                { p: "Se P(A) = 0,5, P(B) = 0,2 e os eventos são independentes, qual é o valor de P(A ou B)? Dica: P(A)+P(B)-P(A)*P(B)", o: ["0,7", "0,6", "0,5", "0,1"], c: "0,6" },
+                // Grupo C
+                { p: "Se uma carta é extraída de um baralho e sabe-se que ela é de ouros, qual a probabilidade de ela ser um Rei?", o: ["1/52", "1/13", "1/4", "4/13"], c: "1/13" },
+                { p: "Dois atiradores tentam acertar um alvo. A chance do primeiro é 1/2 e do segundo é 1/3. Qual a chance de ambos acertarem?", o: ["5/6", "1/6", "1/5", "2/5"], c: "1/6" },
+                { p: "Uma moeda é jogada 3 vezes. Qual a probabilidade de sair cara em todos os lançamentos?", o: ["1/3", "1/6", "1/8", "3/8"], c: "1/8" },
+                { p: "Uma urna tem 5 bolas verdes e 5 amarelas. Tirando duas sem reposição, qual a chance de saírem duas verdes?", o: ["25/100", "2/9", "5/18", "1/4"], c: "2/9" },
+                { p: "No lançamento de um dado, sabendo que saiu um número maior que 3, qual a probabilidade de ser um número ímpar?", o: ["1/3", "2/3", "1/2", "1/6"], c: "1/3" }
+            ]
+        };
+
+        // --- ESTADOS E VARIÁVEIS DO MOTOR DO JOGO ---
+        let faseAtual = 1;
+        let acertosNaFase = 0;
+        let vidas = 3;
+        let perguntasSorteadas = [];
+        let perguntaAtualObjeto = null;
+
+        // Estilos Visuais dos Cenários das 5 Fases (Floresta Seca desabrochando)
+        const cenariosConfig = {
+            1: { bg: "#4a3c31", chao: "#3e2723", troncoW: 24, troncoH: 70, r: 25, fColor: "#7d6608" },
+            2: { bg: "#5d5042", chao: "#4d3227", troncoW: 28, troncoH: 90, r: 35, fColor: "#9a7d0a" },
+            3: { bg: "#566573", chao: "#273746", troncoW: 32, troncoH: 110, r: 45, fColor: "#27ae60" },
+            4: { bg: "#2e4053", chao: "#196f3d", troncoW: 36, troncoH: 130, r: 55, fColor: "#2ecc71" },
+            5: { bg: "#196f3d", chao: "#145a32", troncoW: 42, troncoH: 150, r: 70, fColor: "#1abc9c" }
+        };
+
+        function iniciarJogo() {
+            document.getElementById('tela-inicial').style.display = 'none';
+            document.getElementById('tela-jogo').style.display = 'block';
+            faseAtual = 1;
+            vidas = 3;
+            carregarFase(faseAtual);
+        }
+
+        function carregarFase(fase) {
+            acertosNaFase = 0;
+            vidas = 3;
+
+            // Controle de Trilha Sonora Dinâmica por Fase
+            pararTodasMusicas();
+            let musica = document.getElementById(`musica-fase${fase}`);
+            if(musica) {
+                musica.volume = 0.20;
+                musica.play().catch(e => {
+                    console.log("Aguardando interação para tocar o som.");
+                    });
+            }
+
+            // Clona a lista de perguntas da fase correspondente para evitar mutações e repetições
+            perguntasSorteadas = [...bancoPerguntas[fase]];
+            // Mistura as perguntas aleatoriamente para cada partida ser diferente
+            perguntasSorteadas.sort(() => Math.random() - 0.5);
+
+            atualizarCenarioVisual(fase);
+            proximaPergunta();
+        }
+
+        function atualizarCenarioVisual(fase) {
+           let imagemCenario = document.getElementById('img-cenario');
+           if (imagemCenario) {
+                imagemCenario.src = `fase${fase}.png`; // Vai direto para a fase certa
+            }
+           atualizarInterfaceHUD();
+       }
+
+       function atualizarInterfaceHUD() {
+          document.getElementById('txt-fase').innerText = `Fase: ${faseAtual}/5`;
+          document.getElementById('txt-progresso').innerText = `Acertos: ${acertosNaFase}/3`;
+
+          // Cria o texto de vidas mostrando apenas os corações vermelhos ativos
+           let coracoes = "";
+            for(let i = 0; i < vidas; i++) {
+                coracoes += "❤️ ";
+            }
+
+           document.getElementById('txt-vidas').innerText = `Vidas: ${coracoes}`;
+}
+
+        function proximaPergunta() {
+            atualizarInterfaceHUD();
+
+            if (acertosNaFase === 3) {
+                if (faseAtual === 5) {
+                    alert("🏆 PARABÉNS! Você salvou a floresta!");
+                    reiniciarTotal();
+                } else {
+                    alert(`🌟 Excelente! Você completou a Fase ${faseAtual}! Suas vidas foram recarregadas.`);
+                    faseAtual++;
+                    carregarFase(faseAtual);
+                }
+                return;
+            }
+
+            if (perguntasSorteadas.length === 0) {
+                // Caso usem as perguntas de contingência do vetor
+                perguntasSorteadas = [...bancoPerguntas[faseAtual]];
+                perguntasSorteadas.sort(() => Math.random() - 0.5);
+            }
+
+            perguntaAtualObjeto = perguntasSorteadas.pop();
+            document.getElementById('txt-pergunta').innerText = perguntaAtualObjeto.p;
+
+            // Renderiza as alternativas
+            const grade = document.getElementById('grade-opcoes');
+            grade.innerHTML = "";
+
+            // Clona e embaralha as alternativas para que a resposta certa mude de posição
+            let opcoesEmbaralhadas = [...perguntaAtualObjeto.o];
+            opcoesEmbaralhadas.sort(() => Math.random() - 0.5);
+
+            opcoesEmbaralhadas.forEach(opcao => {
+                let btn = document.createElement('button');
+                btn.classList.add('btn-opcao');
+                btn.innerText = opcao;
+                btn.onclick = () => verificarResposta(opcao);
+                grade.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(opcaoSelecionada) {
+            if (opcaoSelecionada === perguntaAtualObjeto.c) {
+                acertosNaFase++;
+                proximaPergunta();
+            } else {
+                vidas--;
+                alert(`❌ Resposta incorreta! A resposta certa era: ${perguntaAtualObjeto.c}`);
+
+                if (vidas === 0) {
+                    alert("💀 Suas vidas acabaram nesta fase! A floresta secou...");
+                    reiniciarTotal();
+                } else {
+                    proximaPergunta();
+                }
+            }
+        }
+
+        function pararTodasMusicas() {
+            for(let i=1; i<=5; i++){
+                let m = document.getElementById(`musica-fase${i}`);
+                if(m) m.pause();
+            }
+        }
+
+        function reiniciarTotal() {
+            pararTodasMusicas();
+            document.getElementById('tela-inicial').style.display = 'block';
+            document.getElementById('tela-jogo').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
